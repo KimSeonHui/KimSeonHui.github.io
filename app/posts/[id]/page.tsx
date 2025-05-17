@@ -18,17 +18,20 @@ export default async function Post({
     return <div>포스트를 찾을 수 없습니다.</div>;
   }
 
-  const contentHtml = await markdownToHtml(post.content);
+  const contentHtml = await markdownToHtml(post.rawContent);
 
   return (
     <main className="ios-memo-container">
       <div className="post-container">
         <div className="post-header">
           <h1 className="post-title">{post.title}</h1>
-          <div className="post-date">
-            {post.date !== "No date"
-              ? new Date(post.date).toLocaleDateString("ko-KR")
-              : "날짜 없음"}
+          <div className="post-info flex flex-row gap-[12px]">
+            <div className="post-author">{`@${post.author}`}</div>
+            <div className="post-date">
+              {post.date !== "No date"
+                ? new Date(post.date).toLocaleDateString("ko-KR")
+                : "날짜 없음"}
+            </div>
           </div>
           {post.tags && post.tags.length > 0 && (
             <div className="post-tags">
@@ -38,9 +41,6 @@ export default async function Post({
                 </span>
               ))}
             </div>
-          )}
-          {post.description && (
-            <p className="post-description">{post.description}</p>
           )}
         </div>
 

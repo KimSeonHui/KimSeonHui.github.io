@@ -20,7 +20,7 @@ body {
 }
 
 .ios-memo-container {
-  max-width: 800px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 20px;
 }
@@ -30,7 +30,6 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 20px 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .header-content {
@@ -69,21 +68,26 @@ body {
 
 .memo-list {
   margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
 }
 
 .memo-card {
-  background-color: rgb(var(--memo-bg));
-  border: 2px solid rgb(var(--memo-bg));
+  background-color: white;
   border-radius: 8px;
-  padding: 18px;
-  margin-bottom: 16px;
-  box-shadow: var(--memo-shadow);
+  border: 1px solid rgba(var(--memo-border), 0.3);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .memo-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.memo-content {
+  padding: 20px;
 }
 
 .memo-title {
@@ -110,23 +114,18 @@ body {
 
 /* Post 상세 페이지 스타일 */
 .post-container {
-  background-color: rgb(var(--memo-bg));
-  border: 2px solid rgb(var(--memo-border));
-  border-radius: 8px;
   padding: 24px;
   margin: 20px 0;
-  box-shadow: var(--memo-shadow);
 }
 
 .post-header {
-  margin-bottom: 24px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  padding-bottom: 16px;
+  margin-bottom: 40px;
 }
 
 .post-title {
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 36px;
+  font-weight: 500;
   margin-bottom: 8px;
 }
 
@@ -158,16 +157,6 @@ body {
   color: #444;
 }
 
-.post-description {
-  font-size: 16px;
-  color: #555;
-  line-height: 1.6;
-  margin-top: 12px;
-  font-style: italic;
-  border-left: 3px solid rgb(var(--memo-border));
-  padding-left: 12px;
-}
-
 .post-content {
   line-height: 1.8;
 }
@@ -175,29 +164,27 @@ body {
 .post-content h1 {
   font-size: 28px;
   font-weight: 700;
-  margin: 24px 0 16px;
+  margin-top: 24px;
   padding-bottom: 8px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .post-content h2 {
   font-size: 24px;
   font-weight: 600;
-  margin: 24px 0 16px;
+  margin-top: 24px;
   padding-bottom: 6px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .post-content h3 {
   font-size: 20px;
   font-weight: 600;
-  margin: 20px 0 12px;
+  margin-top: 20px;
 }
 
 .post-content h4 {
   font-size: 18px;
   font-weight: 600;
-  margin: 18px 0 10px;
+  margin-top: 18px;
 }
 
 .post-content p {
@@ -336,4 +323,48 @@ body {
 .post-content ul.contains-task-list li input[type="checkbox"] {
   margin-right: 8px;
   margin-top: 5px;
+}
+
+/* 메모지 디자인 스타일 */
+.paper-note {
+  background-color: #fffdf7;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: none;
+}
+
+.paper-note:hover {
+  transform: rotate(0deg) scale(1.02);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.tape {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0.9;
+  width: 150px;
+}
+
+/* 썸네일 스타일 */
+.memo-thumbnail {
+  overflow: hidden;
+  border-radius: 6px;
+  position: relative;
+  background: rgb(var(--background-rgb));
+  padding-top: 25px;
+}
+
+.thumbnail-image {
+  object-fit: cover;
+  width: 100%;
+  height: auto;
+  max-height: 200px;
+  display: block;
+  transition: transform 0.3s;
+}
+
+.paper-note:hover .thumbnail-image {
+  transform: scale(1.03);
 }
