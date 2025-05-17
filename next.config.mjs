@@ -7,6 +7,8 @@ const nextConfig = {
   output: "export",
   basePath:
     process.env.NODE_ENV === "production" ? "/KimSeonHui.github.io" : "",
+  assetPrefix:
+    process.env.NODE_ENV === "production" ? "/KimSeonHui.github.io/" : "",
   images: {
     unoptimized: true,
   },
