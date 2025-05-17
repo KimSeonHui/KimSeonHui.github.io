@@ -5,14 +5,11 @@ const nextConfig = {
   // Configure `pageExtensions` to include markdown and MDX files
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
   output: "export",
-  basePath:
-    process.env.NODE_ENV === "production" ? "/KimSeonHui.github.io" : "",
-  assetPrefix:
-    process.env.NODE_ENV === "production" ? "/KimSeonHui.github.io/" : "",
+  basePath: "",
+  assetPrefix: "",
   images: {
     unoptimized: true,
   },
-  // Optionally, add any other Next.js config below
 };
 
 const withMDX = createMDX({
