@@ -1,0 +1,116 @@
+---
+title: "미니 React 개발 Day1. createRoot"
+date: "2025-05-19"
+author: "sunny"
+description: "createRoot, render 함수, JSX 구조 설계, 중첩 컴포넌트 렌더링"
+---
+
+# React씨, 우리 다른 방식으로 한 번 만나보시죠
+
+예전에 유튜브에서 토스 개발자 컨퍼런스에서 주니어 학습 방법에 관련한 영상을 본 적이 있다. 사람에 따라 선호하는 공부 방식이 크게 이론파 / 실전파 두 분류로 나뉜다고 하셨다.
+하지만 어떤 타입이던지 결국에는 더 나은 개발자로 성장하기 위해서는 이론만 공부하거나 코딩만 작성해서는 한계가 있으며 두 가지가 같이 가야 한다고 하셨다.
+
+개인적으로는 이론파보다 실전파에 좀 더 가깝다고 느꼈었다. 그래서 처음에만 공식문서를 좀 보다가 코딩하고, 코딩하다가 모르는 게 있으면 다시 구글링, 필요한 부분의 문서를 찾아 읽곤했다.
+하지만 시간이 점점 지나다보니 지금의 공부 방식에 한계가 느껴졌다. 필요한 부분만 문서를 읽다보니 다 조각조각 나서 React에 대한 큰 그림이 잘 그려지지 않는 것 같았다.(제대로 공부가 안됐다)
+그래서 다시 방향을 바꿔 공식문서만 계속 읽어봤다. 하지만 반복되면 될수록 알고 있는 내용이라고 생각되니까 집중력이 점점 흐트려졌다.
+
+나에게 부족한 큰 그림을 그릴 수 있는 이론을 기반으로 하되 공부에 대한 나의 성향을 반영하려면 어떻게 해야할까? <br />
+고민하다가 직접 React를 만들어보면 어떨까 생각했다. 직접 만들려면 그냥 문서를 읽을 때보다 더 꼼꼼히 집중력을 유지하면서 읽을 수 있을 것 같았고 이론적인 큰 그림 이해도 가능할 것 같았고, 직접 코딩도 하기 때문에 계속해서 학습에 대한 흥미도 계속 유지할 수 있을 것 같았다.
+
+개발자로 계속해서 일을 하려면 나만의 학습법은 찾아야 한다고 생각을 했었다. 이번에는 React에 대해 공부하는 시간이자 새로운 학습법을 시험해볼 수 있는 좋은 시간이 될 것 같다.
+
+<br />
+
+## React의 시작점
+
+React 프로젝트를 진행하게 되면 React의 시작점으로 다음 부분을 만날 수 있다.
+
+```javascript
+createRoot(document.getElementById("root")).render(<App />);
+```
+
+React도 코드를 열어보면 자바스크립트인데, 어떻게 리액트가 되는 것일까? `createRoot` 부터 시작해보자.
+
+### createRoot
+
+[공식문서](https://ko.react.dev/reference/react-dom/client/createRoot#usage)에 따르면 createRoot를 이렇게 설명한다.
+
+> 브라우저 DOM 엘리먼트 안에 콘텐츠를 표시할 수 있는 React 루트를 생성합니다. <br />
+> React는 루트를 생성하고 그 안에 있는 DOM을 관리합니다.
+
+즉, `createRoot` 역할은 **리액트가 컴포넌트들을 관리할 수 있도록 하는 영역(루트)를 생성하는 것**이다.
+
+<br />
+
+#### 1. 루트 생성
+
+```javascript
+createRoot(document.getElementById("root")).render(<App />);
+```
+
+위에서 살펴봤던 이 코드를 다시 보면 `createRoot`를 통해 `#root`라는 엘리먼트는 리액트가 관리하는 영역이야! 라고 리액트에게 알려주는 것이다.  
+리액트가 컴포넌트를 관리할 수 있도록 DOM에 대한 진입점을 열어주는 것이 `createRoot`이다.
+
+그 후 `render` 함수를 통해 생성된 루트에 안에 리액트 컴포넌트를 표시한다. render 함수에 대해서는 추후에 자세히 살펴볼 예정이다.
+
+<br />
+
+#### 2. 무엇을 관리하는 걸까?
+
+위에서 살펴본 것처럼 `createRoot`는 리액트가 컴포넌트들을 관리할 수 있는 루트를 생성한다. 그러면 정확히 컴포넌트의 무엇을 관리하는 걸까?
+
+한 마디로 컴포넌트의 **모든 상태와 동작**을 관리한다!
+
+- 컴포넌트의 라이프사이클 : ex) mount, update, unmount
+- 상태 변경 : ex) 상태 변경 감지 -> 바뀐 부분만 리렌더링
+- 렌더 트리 구조
+- DOM 업데이트
+- Error Boundaries
+
+등등 많은 부분을 관리한다. 이렇게 많은 부분들을 관리할 수 있게 하는 시작점이 바로 `createRoot`로 생성한 루트이다.
+
+<br />
+
+#### 3. 어떻게 관리하는 걸까?
+
+이번에 공부를 하기 시작하면서 `createRoot`가 하는 역할을 알게 되니 그러면 리액트는 어떻게 이런 상태들을 관리하는 거지? 하고 의문을 가졌던 부분이다.
+리액트 깃헙에서 `createRoot` 함수 구현 부분을 따라가보면 다음과 같은 코드를 만날 수 있다.
+
+```javascript
+const uninitializedFiber = createHostRootFiber(
+  tag,
+  isStrictMode,
+  concurrentUpdatesByDefaultOverride
+);
+root.current = uninitializedFiber;
+uninitializedFiber.stateNode = root;
+```
+
+`createRoot`를 실행할 때 리액트 내부적으로 `Fiber` 라는 구조를 생성한다. 리액트는 이때 생성된 `Fiber`를 통해 생성된 컴포넌트 트리를 추적하고 상태를 관리한다.
+
+**리액트는 JSX를 사용하며 Virtual Dom을 통해 UI에서 변경된 부분만 실제 DOM에 업데이트 한다.** 라고 알고 있었다. 그래서 컴포넌트에 관한 관리를 담당하는 건 Virtaul Dom 일거라고 생각했지
+`Fiber`라는 구조가 더 있었을 거라고는 생각하지 못했다. 그리고 Virtaul Dom에 대해서도 제대로 이해하지 못하고 있었구나라고 알게 되었다.
+
+<br />
+<br />
+
+위에서 설명한 내용이 `Fiber`에 대한 설명과 이해가 되기까지는 충분하지 않다. 하지만 `Fiber`에 대해 간단하게만 알아본 이유는 관련해서 더 많은 내용을 담고 있는 글을 찾고 또 읽다보니 지금 당장 `Fiber`를 이해하려고 하다가는 미니 리액트 프로젝트가 엄청 밀릴 수 있을 것 같았다.
+
+> React Fiber is an ongoing reimplementation of React's core algorithm. It is the culmination of **over two years of research by the React team.**  
+> If you find yourself frustrated in your attempts to understand it, don't feel discouraged. **Keep trying and it will eventually make sense**  
+> [React Fiber Architecture](https://github.com/acdlite/react-fiber-architecture)
+
+공식문서는 아니지만 React Fiber에 대해 설명한 글에서 나온 글을 보고 공부에 대한 방향성을 정했다.
+당장은 미니 리액트에 집중하고, 해당 문서에 나온 부분에서도 React Fiber에 대한 설명을 따라가기 전에 필수적으로 리액트 컴포넌트, 인스턴스, Reconciliation, 기본 원칙 등등에 대해 숙지하라고 한다.
+미니 리액트를 만들고 공부하면서 React에 대한 내용을 먼저 숙지하고자 한다.
+
+그리고 v1 미니 리액트에서의 `createRoot`는 `Fiber`가 없지만 다음 버전에서는 `Fiber`를 공부해서 적용해볼 수 있었으면 좋겠다는 생각이 들었다.
+
+<br />
+<br />
+
+## 참고
+
+- [React_createRoot](https://ko.react.dev/reference/react-dom/client/createRoot#usage)
+- [React 파이버 아키텍처 분석](https://d2.naver.com/helloworld/2690975)
+- [React Fiber Architecture](https://github.com/acdlite/react-fiber-architecture?tab=readme-ov-file)
