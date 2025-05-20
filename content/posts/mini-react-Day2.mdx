@@ -1,0 +1,82 @@
+---
+title: "미니 React 개발 Day2. JSX"
+date: "2025-05-20"
+author: "sunny"
+description: "JSX-Like 구조 설계"
+---
+
+# JSX란?
+
+```
+const element = <h1>Hello, world!</h1>;
+```
+
+지금이야 JSX에 익숙하지만, 처음 리액트를 배울 때만해도 도대체 이게 무슨 문법인가하는 생각이 들었다.  
+JSX에 대해서 공식문서는 이렇게 소개한다.
+
+> JSX는 JavaScript를 확장한 문법으로, JavaScript 파일을 HTML과 비슷하게 마크업을 작성할 수 있도록 해줍니다.
+> 리액트에서는 JSX를 활용해 컴포넌트를 만들고 화면에 어떤 내용을 보여줄 지를 결정한다.
+
+**JSX = Javascript + HTML** 라고 할 수 있을 것 같다
+
+기존의 웹은 HTML, CSS, Javascript의 역할 분담이 확실했다. HTML로는 내용, CSS로는 스타일, Javascript로는 로직을 작성하며 HTML, CSS, Javscript를 각각의 분리된 파일로 관리한다.
+하지만 점점 더 웹이 인터랙티브해지면서 로직이 어떤 내용을 보여줄 지 결정하는 경우가 많아졌다.
+
+이런 이유로 리액트에서는 렌더링 로직과 마크업 로직이 함께 JSX라는 문법으로 존재하게 되었다.
+
+<br />
+
+# JSX는 어떻게 HTML로 바뀌는 걸까?
+
+리액트로 만든 프로젝트를 개발자도구를 켜서 보면 JSX로 만들었지만 일반 html로 만든 것과 동일하게 보인다.
+JSX는 브라우저가 직접 이해하지 못하기 때문에 `Babel`과 같은 트랜스파일러가 JSX 호출을 `React.createElement` 호출로 바꾼다.
+
+// 리액트 api 문서에는 React.createElement가 레거시 api로 등록되어 있던데 지금은 내부로직이 바뀐건가? 아니면 내부 로직은 그대로인데,
+api만 내부적으로 쓰고 외부적으로는 쓰지 않도록 하는 건가?
+
+```
+// 이런 JSX 문법이
+const element = (
+  <h1 className="greeting">
+    Hello, world!
+  </h1>
+);
+
+
+// 이런 React.createElement 호출로 바뀐다
+const element = React.createElement(
+  'h1',
+  {className: 'greeting'},
+  'Hello, world!'
+);
+
+// React.createElement는 객체를 생성한다
+const element = {
+  type: 'h1',
+  props: {
+    className: 'greeting',
+    children: 'Hello, world!'
+  }
+};
+
+```
+
+리액트는 이렇게 변환된 객체를 읽어서 DOM으로 렌더링 한다.
+
+미니 리액트를 만들 때는 트랜스파일러까지는 작업하지 않고 React.createElement가 최종적으로 반환하는 JSX 객체의 구조만 만들어서 DOM으로 렌더링 시키려고 한다.
+
+## JSX-Like 객체
+
+```
+{
+  type: ""; // 태그 이름, 리액트 컴포넌트일 경우 대문자로 시작
+  props: {
+    ref : null; // 전달 받은 값이 있을 경우 전달 받은 값으로 할당, 기본은 null
+    key : null; // 전달 받은 값이 있을 경우 전달 받은 값으로 할당, 기본은 null
+  } //  null 또는 객체
+  children: []; // 자식 노드 :: 문자열, 숫자, 빈 노드, 리액트 엘리먼트 등등
+}
+```
+
+리액트 공식문에서 있는 내용을 참고해서 JSX-Like 객체의 구조를 이렇게 같이 잡았다.
+props의 `ref`와 `key` 값은 props 중에서 특수한 값으로 객체에서는 props에 들어가지만 생성된 엘리먼트에서는 `element.props.ref`, `element.props.key`로는 사용하지 못하게 처리할 예정이다.
