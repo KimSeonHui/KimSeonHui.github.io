@@ -29,10 +29,136 @@ JSX에 대해서 공식문서는 이렇게 소개한다.
 # JSX는 어떻게 HTML로 바뀌는 걸까?
 
 리액트로 만든 프로젝트를 개발자도구를 켜서 보면 JSX로 만들었지만 일반 html로 만든 것과 동일하게 보인다.
-JSX는 브라우저가 직접 이해하지 못하기 때문에 `Babel`과 같은 트랜스파일러가 JSX 호출을 `React.createElement` 호출로 바꾼다.
+JSX는 브라우저가 직접 이해하지 못하기 때문에 트랜스파일링을 통해 브라우저가 이해할 수 있는 언어로 바꿔주는 작업이 필요하다.
 
-// 리액트 api 문서에는 React.createElement가 레거시 api로 등록되어 있던데 지금은 내부로직이 바뀐건가? 아니면 내부 로직은 그대로인데,
-api만 내부적으로 쓰고 외부적으로는 쓰지 않도록 하는 건가?
+이 부분에 대해 찾아볼 때 트랜스파일링을 하면 Babel과 같은 트랜스파일러에 의해 JSX 코드가 `React.createElement`로 변환된다.  
+그리고 `React.createElement`에 의해 자바스크립트 객체로 최종적으로 바뀐다라고 설명 되어 있는 내용을 많이 봤다.
+
+하지만 [리액트 공식 문서](https://ko.react.dev/reference/react/createElement#createelement)를 살펴보면 `React.createElement`는 **레거시 api**로 소개되어 있다.  
+오잉? 그렇다면 내가 찾아본 설명이 옛날 거고 지금은 내부 로직이 바뀐건가? 왜 `createElement`가 레거시 api로 되어 있지 싶어서 더 찾아봤다.
+
+<br />
+
+## createElement가 레거시 api가 된 이유
+
+2019년에 `createElement`에 대한 [RFC](https://github.com/reactjs/rfcs/blob/c71cb88b0badbe9119e1399688ee481e62da142b/text/0000-create-element-changes.md)가 올라왔다.
+
+> **RFC란?**  
+> "Request for Comments"의 약자로, 기술적인 제안이나 표준을 문서화하는 방식으로, 오픈소스에서 새로운 기능이나 변경사항을 제안하고
+> 논의하기 위한 문서 같은 의미로 사용됨
+
+RFC에서 말하는 createElement의 문제점을 정리하면 이렇다
+
+- 트랜스파일링 된 createElement를 호출하기 위헤 불필요한 `import React from 'react'` 구문이 항상 필요함
+- 클래스 컴포넌트를 사용할 때는 의미가 있었지만 함수형 컴포넌트로 바뀌면서 의미가 없어진 기능들이 존재
+- createElement는 JSX의 사용을 생각하고 만든 것이 아니라 JSX 사용 없이 수동으로 작성할 수 있도록 한 것
+
+이러한 문제로 인해 **함수형 컴포넌트** + **JSX** 상황에 맞게 createElement 개선하는 작업이 진행되었다.  
+createElement 대한 더 자세한 내용은 RFC에서 확인할 수 있다.
+
+<br />
+
+## 개선된 JSX 트랜스파일링
+
+리액트 17 버전 부터는 트랜스파일링 결과가 `createElement`가 아니라 `jsx`로 바뀐다.
+
+jsx에 대한 내부 코드를 살펴보자.  
+jsx 함수는 dev, prod 환경에 따라 다른 함수를 사용한다. 운영 환경에서 사용되는 jsxProd만 살펴볼 예정이다.
+
+코드를 처음 살펴보면서 공부하는 거라 어렵게 느껴지고 코드에 압도(?) 당하는 거 같지만 차근 차근 살펴보면 jsx 함수는 props, key를 설정하는 함수라는 걸 알 수 있다.
+
+```
+export function jsxProd(type, config, maybeKey) {
+  let key = null;
+
+  // key 설정
+  if (maybeKey !== undefined) {
+    // ...
+    key = '' + maybeKey;
+  }
+
+  if (hasValidKey(config)) {
+    // ...
+    key = '' + config.key;
+  }
+
+  // props 설정
+  let props;
+  if (!('key' in config)) {
+    props = config;
+  } else {
+    props = {};
+    for (const propName in config) {
+      // Skip over reserved prop names
+      if (propName !== 'key') {
+        props[propName] = config[propName];
+      }
+    }
+  }
+
+  // ...
+
+  // ReactElement 반환
+  return ReactElement(
+    type,
+    key,
+    undefined,
+    undefined,
+    getOwner(),
+    props,
+    undefined,
+    undefined,
+  );
+}
+```
+
+spread 구문으로 key 가 props로 전달되는 게 가능하지만 점차 deprecated할 예정인데,  
+이를 점진적으로 개선하기 위해 maybeKey를 사용해 props로 전달된 key와 명시적으로 전달된 key를 구분한다.
+
+```
+  if (maybeKey !== undefined) {
+    // ...
+    key = '' + maybeKey;
+  }
+
+  if (hasValidKey(config)) {
+    // ...
+    key = '' + config.key;
+  }
+```
+
+jsx 함수에 대해 살펴 봤으니 그 다음으로는 jsx가 반환하는 ReactElement를 살펴보고자 한다.
+
+```
+function ReactElement(
+  type,
+  key,
+  self,
+  source,
+  owner,
+  props,
+  debugStack,
+  debugTask,
+) {
+  // ...
+
+  let element;
+
+  // ...
+  element = {
+    $$typeof: REACT_ELEMENT_TYPE,
+    type,
+    key,
+    ref,
+    props,
+  };
+
+  return element;
+}
+```
+
+ReactElement 함수에 다른 내용도 있지만 간단히 정리하면 위와 같이 element 객체를 정의하고 그 객체를 반환하는 함수이다.
+따라서, createElement에서 jsx로 코드가 바뀌었지만 동일하게 자바스크립트 객체로 최종적으로 반환한다.
 
 ```
 // 이런 JSX 문법이
@@ -43,14 +169,18 @@ const element = (
 );
 
 
-// 이런 React.createElement 호출로 바뀐다
-const element = React.createElement(
+// 이런 _jsx 호출로 바뀐다
+import { jsx as _jsx } from "react/jsx-runtime";
+
+const element = _jsx(
   'h1',
-  {className: 'greeting'},
-  'Hello, world!'
+  {
+    className: 'greeting',
+    children : 'Hello, world!'
+  },
 );
 
-// React.createElement는 객체를 생성한다
+// 최종적으로 자바스크립트 객체를 생성한다
 const element = {
   type: 'h1',
   props: {
@@ -61,22 +191,44 @@ const element = {
 
 ```
 
+childeren을 인자로 건내주었던 createElement와 달리 jsx 함수는 children을 props로 전달하고 있다.
+
+```
+React.createElement("h1", { className: "greeting" }, "Hello, world!");
+
+jsx("h1", {  className: "greeting", children: "Hello, world!" });
+```
+
 리액트는 이렇게 변환된 객체를 읽어서 DOM으로 렌더링 한다.
 
-미니 리액트를 만들 때는 트랜스파일러까지는 작업하지 않고 React.createElement가 최종적으로 반환하는 JSX 객체의 구조만 만들어서 DOM으로 렌더링 시키려고 한다.
+미니 리액트를 만들 때는 트랜스파일러까지는 작업하지 않고 jsx 함수가 최종적으로 반환하는 JSX 객체의 구조만 만들어서 DOM으로 렌더링 시키려고 한다.
 
-## JSX-Like 객체
+<br />
+
+# JSX-Like 객체
 
 ```
 {
   type: ""; // 태그 이름, 리액트 컴포넌트일 경우 대문자로 시작
+  key : null; // 전달 받은 값이 있을 경우 전달 받은 값으로 할당, 기본은 null
+  ref : null; // 전달 받은 값이 있을 경우 전달 받은 값으로 할당, 기본은 null
   props: {
-    ref : null; // 전달 받은 값이 있을 경우 전달 받은 값으로 할당, 기본은 null
-    key : null; // 전달 받은 값이 있을 경우 전달 받은 값으로 할당, 기본은 null
-  } //  null 또는 객체
-  children: []; // 자식 노드 :: 문자열, 숫자, 빈 노드, 리액트 엘리먼트 등등
+    children: []; // 자식 노드 :: 문자열, 숫자, 빈 노드, 리액트 엘리먼트 등등
+  }
 }
 ```
 
-리액트 공식문에서 있는 내용을 참고해서 JSX-Like 객체의 구조를 이렇게 같이 잡았다.
-props의 `ref`와 `key` 값은 props 중에서 특수한 값으로 객체에서는 props에 들어가지만 생성된 엘리먼트에서는 `element.props.ref`, `element.props.key`로는 사용하지 못하게 처리할 예정이다.
+리액트 트랜스파일링과 jsx 함수에 대한 내용을 참고해서 JSX-Like 객체의 구조를 이렇게 같이 잡았다.  
+이렇게 리액트의 내부 코드까지 살펴보면서 공부해본 적은 처음이라 정확히 이해가 전부 안 가는 부분들도 남아 있기는하다. 이해 안가면 계속 반복해서 보다보면 이해할 때가 있을 거라 생각하고 앞으로 계속 미니 리액트를 만들어가면서 더 이해가 깊어지지 않을까 생각한다.
+
+<br />
+<br />
+
+# 참고
+
+- [React github_jsxProd](https://github.com/facebook/react/blob/main/packages/react/src/jsx/ReactJSXElement.js#L306)
+- [JSX로 마크업 작성하기](https://ko.react.dev/learn/writing-markup-with-jsx)
+- [createElement](https://ko.react.dev/reference/react/createElement#createelement)
+- [JSX 소개](https://ko.legacy.reactjs.org/docs/introducing-jsx.html)
+- [React createElement로 리팩토링 하기 (권장 X)](https://velog.io/@hbsps/React-createElement%EB%A1%9C-%EB%A6%AC%ED%8C%A9%ED%86%A0%EB%A7%81-%ED%95%98%EA%B8%B0-%EA%B6%8C%EC%9E%A5-X)
+- [React - createElement 알아보기](https://velog.io/@sa02045/React-createElement-%EC%95%8C%EC%95%84%EB%B3%B4%EA%B8%B0#createelement%EA%B0%80-legacy-api%EA%B0%80-%EB%90%9C-%EC%9D%B4%EC%9C%A0---%EB%AC%B8%EC%A0%9C%EC%A0%90)
