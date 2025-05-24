@@ -8,13 +8,13 @@ c:I[9665,[],"ViewportBoundary"]
 e:I[6614,[],""]
 :HL["/_next/static/media/569ce4b8f30dc480-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/_next/static/media/93f479601ee12b01-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/_next/static/css/1cbe9e7ea6cff126.css","style"]
-0:{"P":null,"b":"oGM56YkO7eQ_yKAB2D5sh","p":"","c":["","posts","mini-react-Day1"],"i":false,"f":[[["",{"children":["posts",{"children":[["id","mini-react-Day1","d"],{"children":["__PAGE__",{}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/1cbe9e7ea6cff126.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5cfdac __variable_9a8899 antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["posts",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":[["id","mini-react-Day1","d"],["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L4",["$","$L5",null,{"children":"$L6"}],null,["$","$L7",null,{"children":["$L8","$L9",["$","$La",null,{"promise":"$@b"}]]}]]}],{},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","gzso4AFOzkI4j5l5F6WDs",{"children":[["$","$Lc",null,{"children":"$Ld"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],null]}],false]],"m":"$undefined","G":["$e","$undefined"],"s":false,"S":true}
+:HL["/_next/static/css/e544322cefe4a38a.css","style"]
+0:{"P":null,"b":"U-w4vQKRIXUzI6nHbf9M4","p":"","c":["","posts","mini-react-Day1"],"i":false,"f":[[["",{"children":["posts",{"children":[["id","mini-react-Day1","d"],{"children":["__PAGE__",{}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/e544322cefe4a38a.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5cfdac __variable_9a8899 antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["posts",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":[["id","mini-react-Day1","d"],["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L4",["$","$L5",null,{"children":"$L6"}],null,["$","$L7",null,{"children":["$L8","$L9",["$","$La",null,{"promise":"$@b"}]]}]]}],{},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","JF8uSUSvr2HkbJnsMBC2L",{"children":[["$","$Lc",null,{"children":"$Ld"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],null]}],false]],"m":"$undefined","G":["$e","$undefined"],"s":false,"S":true}
 f:"$Sreact.suspense"
 10:I[4911,[],"AsyncMetadata"]
 6:["$","$f",null,{"fallback":null,"children":["$","$L10",null,{"promise":"$@11"}]}]
 9:null
-12:T1e8d,<h1>React씨, 우리 다른 방식으로 한 번 만나보시죠</h1>
+12:T219a,<h1>React씨, 우리 다른 방식으로 한 번 만나보시죠</h1>
 <p>예전에 유튜브에서 토스 개발자 컨퍼런스에서 주니어 학습 방법에 관련한 영상을 본 적이 있다. 사람에 따라 선호하는 공부 방식이 크게 이론파 / 실전파 두 분류로 나뉜다고 하셨다.
 하지만 어떤 타입이던지 결국에는 더 나은 개발자로 성장하기 위해서는 이론만 공부하거나 코딩만 작성해서는 한계가 있으며 두 가지가 같이 가야 한다고 하셨다.</p>
 <p>개인적으로는 이론파보다 실전파에 좀 더 가깝다고 느꼈었다. 그래서 처음에만 공식문서를 좀 보다가 코딩하고, 코딩하다가 모르는 게 있으면 다시 구글링, 필요한 부분의 문서를 찾아 읽곤했다.
@@ -26,7 +26,7 @@ f:"$Sreact.suspense"
 <br />
 <h2>React의 시작점</h2>
 <p>React 프로젝트를 진행하게 되면 React의 시작점으로 다음 부분을 만날 수 있다.</p>
-<pre><code class="language-javascript">createRoot(document.getElementById("root")).render(&#x3C;App />);
+<pre><code class="language-javascript hljs"><span class="hljs-title function_">createRoot</span>(<span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&quot;root&quot;</span>)).<span class="hljs-title function_">render</span>(<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">App</span> /&gt;</span></span>);
 </code></pre>
 <p>React도 코드를 열어보면 자바스크립트인데, 어떻게 리액트가 되는 것일까? <code>createRoot</code> 부터 시작해보자.</p>
 <h3>createRoot</h3>
@@ -38,7 +38,7 @@ React는 루트를 생성하고 그 안에 있는 DOM을 관리합니다.</p>
 <p>즉, <code>createRoot</code> 역할은 <strong>리액트가 컴포넌트들을 관리할 수 있도록 하는 영역(루트)를 생성하는 것</strong>이다.</p>
 <br />
 <h4>1. 루트 생성</h4>
-<pre><code class="language-javascript">createRoot(document.getElementById("root")).render(&#x3C;App />);
+<pre><code class="language-javascript hljs"><span class="hljs-title function_">createRoot</span>(<span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&quot;root&quot;</span>)).<span class="hljs-title function_">render</span>(<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">App</span> /&gt;</span></span>);
 </code></pre>
 <p>위에서 살펴봤던 이 코드를 다시 보면 <code>createRoot</code>를 통해 <code>#root</code>라는 엘리먼트는 리액트가 관리하는 영역이야! 라고 리액트에게 알려주는 것이다.<br>
 리액트가 컴포넌트를 관리할 수 있도록 DOM에 대한 진입점을 열어주는 것이 <code>createRoot</code>이다.</p>
@@ -59,13 +59,13 @@ React는 루트를 생성하고 그 안에 있는 DOM을 관리합니다.</p>
 <h4>3. 어떻게 관리하는 걸까?</h4>
 <p>이번에 공부를 하기 시작하면서 <code>createRoot</code>가 하는 역할을 알게 되니 그러면 리액트는 어떻게 이런 상태들을 관리하는 거지? 하고 의문을 가졌던 부분이다.
 리액트 깃헙에서 <code>createRoot</code> 함수 구현 부분을 따라가보면 다음과 같은 코드를 만날 수 있다.</p>
-<pre><code class="language-javascript">const uninitializedFiber = createHostRootFiber(
+<pre><code class="language-javascript hljs"><span class="hljs-keyword">const</span> uninitializedFiber = <span class="hljs-title function_">createHostRootFiber</span>(
   tag,
   isStrictMode,
   concurrentUpdatesByDefaultOverride
 );
-root.current = uninitializedFiber;
-uninitializedFiber.stateNode = root;
+root.<span class="hljs-property">current</span> = uninitializedFiber;
+uninitializedFiber.<span class="hljs-property">stateNode</span> = root;
 </code></pre>
 <p><code>createRoot</code>를 실행할 때 리액트 내부적으로 <code>Fiber</code> 라는 구조를 생성한다. 리액트는 이때 생성된 <code>Fiber</code>를 통해 생성된 컴포넌트 트리를 추적하고 상태를 관리한다.</p>
 <p><strong>리액트는 JSX를 사용하며 Virtual Dom을 통해 UI에서 변경된 부분만 실제 DOM에 업데이트 한다.</strong> 라고 알고 있었다. 그래서 컴포넌트에 관한 관리를 담당하는 건 Virtaul Dom 일거라고 생각했지

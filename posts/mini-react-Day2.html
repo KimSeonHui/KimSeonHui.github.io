@@ -1,0 +1,179 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/569ce4b8f30dc480-s.p.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/93f479601ee12b01-s.p.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/css/e544322cefe4a38a.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/webpack-05cc406d6a87b1a9.js"/><script src="/_next/static/chunks/4bd1b696-67ee12fb04071d3b.js" async=""></script><script src="/_next/static/chunks/684-bd74ffdbcca87734.js" async=""></script><script src="/_next/static/chunks/main-app-5d4599fa6aff9760.js" async=""></script><meta name="next-size-adjust" content=""/><title>Sunny Archive</title><meta name="description" content="익숙함을 향해 걸어가는 중"/><link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="16x16"/><script>document.querySelectorAll('body link[rel="icon"], body link[rel="apple-touch-icon"]').forEach(el => document.head.appendChild(el))</script><script src="/_next/static/chunks/polyfills-42372ed130431b0a.js" noModule=""></script></head><body class="__variable_5cfdac __variable_9a8899 antialiased"><main class="ios-memo-container"><div class="post-container"><div class="post-header"><h1 class="post-title">미니 React 개발 Day2. JSX</h1><div class="post-info flex flex-row gap-[12px]"><div class="post-author">@sunny</div><div class="post-date">2025. 5. 20.</div></div></div><div class="post-content"><h1>JSX란?</h1>
+<pre><code class="language-javascript hljs"><span class="hljs-keyword">const</span> element = <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Hello, world!<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span>;
+</code></pre>
+<p>지금이야 JSX에 익숙하지만, 처음 리액트를 배울 때만해도 도대체 이게 무슨 문법인가하는 생각이 들었다.<br>
+JSX에 대해서 공식문서는 이렇게 소개한다.</p>
+<blockquote>
+<p>JSX는 JavaScript를 확장한 문법으로, JavaScript 파일을 HTML과 비슷하게 마크업을 작성할 수 있도록 해줍니다.
+리액트에서는 JSX를 활용해 컴포넌트를 만들고 화면에 어떤 내용을 보여줄 지를 결정한다.</p>
+</blockquote>
+<p><strong>JSX = Javascript + HTML</strong> 라고 할 수 있을 것 같다</p>
+<p>기존의 웹은 HTML, CSS, Javascript의 역할 분담이 확실했다. HTML로는 내용, CSS로는 스타일, Javascript로는 로직을 작성하며 HTML, CSS, Javscript를 각각의 분리된 파일로 관리한다.
+하지만 점점 더 웹이 인터랙티브해지면서 로직이 어떤 내용을 보여줄 지 결정하는 경우가 많아졌다.</p>
+<p>이런 이유로 리액트에서는 렌더링 로직과 마크업 로직이 함께 JSX라는 문법으로 존재하게 되었다.</p>
+<br />
+<h1>JSX는 어떻게 HTML로 바뀌는 걸까?</h1>
+<p>리액트로 만든 프로젝트를 개발자도구를 켜서 보면 JSX로 만들었지만 일반 html로 만든 것과 동일하게 보인다.
+JSX는 브라우저가 직접 이해하지 못하기 때문에 트랜스파일링을 통해 브라우저가 이해할 수 있는 언어로 바꿔주는 작업이 필요하다.</p>
+<p>이 부분에 대해 찾아볼 때 트랜스파일링을 하면 Babel과 같은 트랜스파일러에 의해 JSX 코드가 <code>React.createElement</code>로 변환된다.<br>
+그리고 <code>React.createElement</code>에 의해 자바스크립트 객체로 최종적으로 바뀐다라고 설명 되어 있는 내용을 많이 봤다.</p>
+<p>하지만 <a href="https://ko.react.dev/reference/react/createElement#createelement">리액트 공식 문서</a>를 살펴보면 <code>React.createElement</code>는 <strong>레거시 api</strong>로 소개되어 있다.<br>
+오잉? 그렇다면 내가 찾아본 설명이 옛날 거고 지금은 내부 로직이 바뀐건가? 왜 <code>createElement</code>가 레거시 api로 되어 있지 싶어서 더 찾아봤다.</p>
+<br />
+<h2>createElement가 레거시 api가 된 이유</h2>
+<p>2019년에 <code>createElement</code>에 대한 <a href="https://github.com/reactjs/rfcs/blob/c71cb88b0badbe9119e1399688ee481e62da142b/text/0000-create-element-changes.md">RFC</a>가 올라왔다.</p>
+<blockquote>
+<p><strong>RFC란?</strong><br>
+"Request for Comments"의 약자로, 기술적인 제안이나 표준을 문서화하는 방식으로, 오픈소스에서 새로운 기능이나 변경사항을 제안하고
+논의하기 위한 문서 같은 의미로 사용됨</p>
+</blockquote>
+<p>RFC에서 말하는 createElement의 문제점을 정리하면 이렇다</p>
+<ul>
+<li>트랜스파일링 된 createElement를 호출하기 위헤 불필요한 <code>import React from 'react'</code> 구문이 항상 필요함</li>
+<li>클래스 컴포넌트를 사용할 때는 의미가 있었지만 함수형 컴포넌트로 바뀌면서 의미가 없어진 기능들이 존재</li>
+<li>createElement는 JSX의 사용을 생각하고 만든 것이 아니라 JSX 사용 없이 수동으로 작성할 수 있도록 한 것</li>
+</ul>
+<p>이러한 문제로 인해 <strong>함수형 컴포넌트</strong> + <strong>JSX</strong> 상황에 맞게 createElement 개선하는 작업이 진행되었다.<br>
+createElement 대한 더 자세한 내용은 RFC에서 확인할 수 있다.</p>
+<br />
+<h2>개선된 JSX 트랜스파일링</h2>
+<p>리액트 17 버전 부터는 트랜스파일링 결과가 <code>createElement</code>가 아니라 <code>jsx</code>로 바뀐다.</p>
+<p>jsx에 대한 내부 코드를 살펴보자.<br>
+jsx 함수는 dev, prod 환경에 따라 다른 함수를 사용한다. 운영 환경에서 사용되는 jsxProd만 살펴볼 예정이다.</p>
+<p>코드를 처음 살펴보면서 공부하는 거라 어렵게 느껴지고 코드에 압도(?) 당하는 거 같지만 차근 차근 살펴보면 jsx 함수는 props, key를 설정하는 함수라는 걸 알 수 있다.</p>
+<pre><code class="language-javascript hljs"><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">jsxProd</span>(<span class="hljs-params">type, config, maybeKey</span>) {
+  <span class="hljs-keyword">let</span> key = <span class="hljs-literal">null</span>;
+
+  <span class="hljs-comment">// key 설정</span>
+  <span class="hljs-keyword">if</span> (maybeKey !== <span class="hljs-literal">undefined</span>) {
+    <span class="hljs-comment">// ...</span>
+    key = <span class="hljs-string">&quot;&quot;</span> + maybeKey;
+  }
+
+  <span class="hljs-keyword">if</span> (<span class="hljs-title function_">hasValidKey</span>(config)) {
+    <span class="hljs-comment">// ...</span>
+    key = <span class="hljs-string">&quot;&quot;</span> + config.<span class="hljs-property">key</span>;
+  }
+
+  <span class="hljs-comment">// props 설정</span>
+  <span class="hljs-keyword">let</span> props;
+  <span class="hljs-keyword">if</span> (!(<span class="hljs-string">&quot;key&quot;</span> <span class="hljs-keyword">in</span> config)) {
+    props = config;
+  } <span class="hljs-keyword">else</span> {
+    props = {};
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> propName <span class="hljs-keyword">in</span> config) {
+      <span class="hljs-comment">// Skip over reserved prop names</span>
+      <span class="hljs-keyword">if</span> (propName !== <span class="hljs-string">&quot;key&quot;</span>) {
+        props[propName] = config[propName];
+      }
+    }
+  }
+
+  <span class="hljs-comment">// ...</span>
+
+  <span class="hljs-comment">// ReactElement 반환</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-title class_">ReactElement</span>(
+    type,
+    key,
+    <span class="hljs-literal">undefined</span>,
+    <span class="hljs-literal">undefined</span>,
+    <span class="hljs-title function_">getOwner</span>(),
+    props,
+    <span class="hljs-literal">undefined</span>,
+    <span class="hljs-literal">undefined</span>
+  );
+}
+</code></pre>
+<p>spread 구문으로 key 가 props로 전달되는 게 가능하지만 점차 deprecated할 예정인데,<br>
+이를 점진적으로 개선하기 위해 maybeKey를 사용해 props로 전달된 key와 명시적으로 전달된 key를 구분한다.</p>
+<pre><code class="language-javascript hljs"><span class="hljs-keyword">if</span> (maybeKey !== <span class="hljs-literal">undefined</span>) {
+  <span class="hljs-comment">// ...</span>
+  key = <span class="hljs-string">&quot;&quot;</span> + maybeKey;
+}
+
+<span class="hljs-keyword">if</span> (<span class="hljs-title function_">hasValidKey</span>(config)) {
+  <span class="hljs-comment">// ...</span>
+  key = <span class="hljs-string">&quot;&quot;</span> + config.<span class="hljs-property">key</span>;
+}
+</code></pre>
+<p>jsx 함수에 대해 살펴 봤으니 그 다음으로는 jsx가 반환하는 ReactElement를 살펴보고자 한다.</p>
+<pre><code class="language-javascript hljs"><span class="hljs-keyword">function</span> <span class="hljs-title function_">ReactElement</span>(<span class="hljs-params">
+  type,
+  key,
+  self,
+  source,
+  owner,
+  props,
+  debugStack,
+  debugTask
+</span>) {
+  <span class="hljs-comment">// ...</span>
+
+  <span class="hljs-keyword">let</span> element;
+
+  <span class="hljs-comment">// ...</span>
+  element = {
+    <span class="hljs-attr">$$typeof</span>: <span class="hljs-variable constant_">REACT_ELEMENT_TYPE</span>,
+    type,
+    key,
+    ref,
+    props,
+  };
+
+  <span class="hljs-keyword">return</span> element;
+}
+</code></pre>
+<p>ReactElement 함수에 다른 내용도 있지만 간단히 정리하면 위와 같이 element 객체를 정의하고 그 객체를 반환하는 함수이다.
+따라서, createElement에서 jsx로 코드가 바뀌었지만 동일하게 자바스크립트 객체로 최종적으로 반환한다.</p>
+<pre><code class="language-javascript hljs"><span class="hljs-comment">// 이런 JSX 문법이</span>
+<span class="hljs-keyword">const</span> element = <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span> <span class="hljs-attr">className</span>=<span class="hljs-string">&quot;greeting&quot;</span>&gt;</span>Hello, world!<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span>;
+
+<span class="hljs-comment">// 이런 _jsx 호출로 바뀐다</span>
+<span class="hljs-keyword">import</span> { jsx <span class="hljs-keyword">as</span> _jsx } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react/jsx-runtime&quot;</span>;
+
+<span class="hljs-keyword">const</span> element = <span class="hljs-title function_">_jsx</span>(<span class="hljs-string">&quot;h1&quot;</span>, {
+  <span class="hljs-attr">className</span>: <span class="hljs-string">&quot;greeting&quot;</span>,
+  <span class="hljs-attr">children</span>: <span class="hljs-string">&quot;Hello, world!&quot;</span>,
+});
+
+<span class="hljs-comment">// 최종적으로 자바스크립트 객체를 생성한다</span>
+<span class="hljs-keyword">const</span> element = {
+  <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;h1&quot;</span>,
+  <span class="hljs-attr">props</span>: {
+    <span class="hljs-attr">className</span>: <span class="hljs-string">&quot;greeting&quot;</span>,
+    <span class="hljs-attr">children</span>: <span class="hljs-string">&quot;Hello, world!&quot;</span>,
+  },
+};
+</code></pre>
+<p>childeren을 인자로 건내주었던 createElement와 달리 jsx 함수는 children을 props로 전달하고 있다.</p>
+<pre><code class="language-javascript hljs"><span class="hljs-title class_">React</span>.<span class="hljs-title function_">createElement</span>(<span class="hljs-string">&quot;h1&quot;</span>, { <span class="hljs-attr">className</span>: <span class="hljs-string">&quot;greeting&quot;</span> }, <span class="hljs-string">&quot;Hello, world!&quot;</span>);
+
+<span class="hljs-title function_">jsx</span>(<span class="hljs-string">&quot;h1&quot;</span>, { <span class="hljs-attr">className</span>: <span class="hljs-string">&quot;greeting&quot;</span>, <span class="hljs-attr">children</span>: <span class="hljs-string">&quot;Hello, world!&quot;</span> });
+</code></pre>
+<p>리액트는 이렇게 변환된 객체를 읽어서 DOM으로 렌더링 한다.</p>
+<p>미니 리액트를 만들 때는 트랜스파일러까지는 작업하지 않고 jsx 함수가 최종적으로 반환하는 JSX 객체의 구조만 만들어서 DOM으로 렌더링 시키려고 한다.</p>
+<br />
+<h1>JSX-Like 객체</h1>
+<pre><code class="language-javascript hljs">{
+  <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;&quot;</span>; <span class="hljs-comment">// 태그 이름, 리액트 컴포넌트일 경우 대문자로 시작</span>
+  <span class="hljs-attr">key</span>: <span class="hljs-literal">null</span>; <span class="hljs-comment">// 전달 받은 값이 있을 경우 전달 받은 값으로 할당, 기본은 null</span>
+  <span class="hljs-attr">ref</span>: <span class="hljs-literal">null</span>; <span class="hljs-comment">// 전달 받은 값이 있을 경우 전달 받은 값으로 할당, 기본은 null</span>
+  <span class="hljs-attr">props</span>: {
+    <span class="hljs-attr">children</span>: []; <span class="hljs-comment">// 자식 노드 :: 문자열, 숫자, 빈 노드, 리액트 엘리먼트 등등</span>
+  }
+}
+</code></pre>
+<p>리액트 트랜스파일링과 jsx 함수에 대한 내용을 참고해서 JSX-Like 객체의 구조를 이렇게 같이 잡았다.<br>
+이렇게 리액트의 내부 코드까지 살펴보면서 공부해본 적은 처음이라 정확히 이해가 전부 안 가는 부분들도 남아 있기는하다. 이해 안가면 계속 반복해서 보다보면 이해할 때가 있을 거라 생각하고 앞으로 계속 미니 리액트를 만들어가면서 더 이해가 깊어지지 않을까 생각한다.</p>
+<br />
+<br />
+<h1>참고</h1>
+<ul>
+<li><a href="https://github.com/facebook/react/blob/main/packages/react/src/jsx/ReactJSXElement.js#L306">React github_jsxProd</a></li>
+<li><a href="https://ko.react.dev/learn/writing-markup-with-jsx">JSX로 마크업 작성하기</a></li>
+<li><a href="https://ko.react.dev/reference/react/createElement#createelement">createElement</a></li>
+<li><a href="https://ko.legacy.reactjs.org/docs/introducing-jsx.html">JSX 소개</a></li>
+<li><a href="https://velog.io/@hbsps/React-createElement%EB%A1%9C-%EB%A6%AC%ED%8C%A9%ED%86%A0%EB%A7%81-%ED%95%98%EA%B8%B0-%EA%B6%8C%EC%9E%A5-X">React createElement로 리팩토링 하기 (권장 X)</a></li>
+<li><a href="https://velog.io/@sa02045/React-createElement-%EC%95%8C%EC%95%84%EB%B3%B4%EA%B8%B0#createelement%EA%B0%80-legacy-api%EA%B0%80-%EB%90%9C-%EC%9D%B4%EC%9C%A0---%EB%AC%B8%EC%A0%9C%EC%A0%90">React - createElement 알아보기</a></li>
+</ul>
+</div></div></main><!--$--><!--/$--><!--$--><!--/$--><script src="/_next/static/chunks/webpack-05cc406d6a87b1a9.js" async=""></script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"1:\"$Sreact.fragment\"\n2:I[7555,[],\"\"]\n3:I[1295,[],\"\"]\n5:I[9665,[],\"MetadataBoundary\"]\n7:I[9665,[],\"OutletBoundary\"]\na:I[4911,[],\"AsyncMetadataOutlet\"]\nc:I[9665,[],\"ViewportBoundary\"]\ne:I[6614,[],\"\"]\n:HL[\"/_next/static/media/569ce4b8f30dc480-s.p.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/93f479601ee12b01-s.p.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/css/e544322cefe4a38a.css\",\"style\"]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":null,\"b\":\"U-w4vQKRIXUzI6nHbf9M4\",\"p\":\"\",\"c\":[\"\",\"posts\",\"mini-react-Day2\"],\"i\":false,\"f\":[[[\"\",{\"children\":[\"posts\",{\"children\":[[\"id\",\"mini-react-Day2\",\"d\"],{\"children\":[\"__PAGE__\",{}]}]}]},\"$undefined\",\"$undefined\",true],[\"\",[\"$\",\"$1\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/css/e544322cefe4a38a.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"en\",\"children\":[\"$\",\"body\",null,{\"className\":\"__variable_5cfdac __variable_9a8899 antialiased\",\"children\":[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L3\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"}],[\"$\",\"div\",null,{\"style\":{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"},\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}}],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"},\"children\":404}],[\"$\",\"div\",null,{\"style\":{\"display\":\"inline-block\"},\"children\":[\"$\",\"h2\",null,{\"style\":{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0},\"children\":\"This page could not be found.\"}]}]]}]}]],[]],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]}]}]]}],{\"children\":[\"posts\",[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L3\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}],{\"children\":[[\"id\",\"mini-react-Day2\",\"d\"],[\"$\",\"$1\",\"c\",{\"children\":[null,[\"$\",\"$L2\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L3\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\"}]]}],{\"children\":[\"__PAGE__\",[\"$\",\"$1\",\"c\",{\"children\":[\"$L4\",[\"$\",\"$L5\",null,{\"children\":\"$L6\"}],null,[\"$\",\"$L7\",null,{\"children\":[\"$L8\",\"$L9\",[\"$\",\"$La\",null,{\"promise\":\"$@b\"}]]}]]}],{},null,false]},null,false]},null,false]},null,false],[\"$\",\"$1\",\"h\",{\"children\":[null,[\"$\",\"$1\",\"73uansqwknwf1bk1D7kdv\",{\"children\":[[\"$\",\"$Lc\",null,{\"children\":\"$Ld\"}],[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"}]]}],null]}],false]],\"m\":\"$undefined\",\"G\":[\"$e\",\"$undefined\"],\"s\":false,\"S\":true}\n"])</script><script>self.__next_f.push([1,"f:\"$Sreact.suspense\"\n10:I[4911,[],\"AsyncMetadata\"]\n6:[\"$\",\"$f\",null,{\"fallback\":null,\"children\":[\"$\",\"$L10\",null,{\"promise\":\"$@11\"}]}]\n"])</script><script>self.__next_f.push([1,"9:null\n"])</script><script>self.__next_f.push([1,"12:T3440,"])</script><script>self.__next_f.push([1,"\u003ch1\u003eJSX란?\u003c/h1\u003e\n\u003cpre\u003e\u003ccode class=\"language-javascript hljs\"\u003e\u003cspan class=\"hljs-keyword\"\u003econst\u003c/span\u003e element = \u003cspan class=\"language-xml\"\u003e\u003cspan class=\"hljs-tag\"\u003e\u0026lt;\u003cspan class=\"hljs-name\"\u003eh1\u003c/span\u003e\u0026gt;\u003c/span\u003eHello, world!\u003cspan class=\"hljs-tag\"\u003e\u0026lt;/\u003cspan class=\"hljs-name\"\u003eh1\u003c/span\u003e\u0026gt;\u003c/span\u003e\u003c/span\u003e;\n\u003c/code\u003e\u003c/pre\u003e\n\u003cp\u003e지금이야 JSX에 익숙하지만, 처음 리액트를 배울 때만해도 도대체 이게 무슨 문법인가하는 생각이 들었다.\u003cbr\u003e\nJSX에 대해서 공식문서는 이렇게 소개한다.\u003c/p\u003e\n\u003cblockquote\u003e\n\u003cp\u003eJSX는 JavaScript를 확장한 문법으로, JavaScript 파일을 HTML과 비슷하게 마크업을 작성할 수 있도록 해줍니다.\n리액트에서는 JSX를 활용해 컴포넌트를 만들고 화면에 어떤 내용을 보여줄 지를 결정한다.\u003c/p\u003e\n\u003c/blockquote\u003e\n\u003cp\u003e\u003cstrong\u003eJSX = Javascript + HTML\u003c/strong\u003e 라고 할 수 있을 것 같다\u003c/p\u003e\n\u003cp\u003e기존의 웹은 HTML, CSS, Javascript의 역할 분담이 확실했다. HTML로는 내용, CSS로는 스타일, Javascript로는 로직을 작성하며 HTML, CSS, Javscript를 각각의 분리된 파일로 관리한다.\n하지만 점점 더 웹이 인터랙티브해지면서 로직이 어떤 내용을 보여줄 지 결정하는 경우가 많아졌다.\u003c/p\u003e\n\u003cp\u003e이런 이유로 리액트에서는 렌더링 로직과 마크업 로직이 함께 JSX라는 문법으로 존재하게 되었다.\u003c/p\u003e\n\u003cbr /\u003e\n\u003ch1\u003eJSX는 어떻게 HTML로 바뀌는 걸까?\u003c/h1\u003e\n\u003cp\u003e리액트로 만든 프로젝트를 개발자도구를 켜서 보면 JSX로 만들었지만 일반 html로 만든 것과 동일하게 보인다.\nJSX는 브라우저가 직접 이해하지 못하기 때문에 트랜스파일링을 통해 브라우저가 이해할 수 있는 언어로 바꿔주는 작업이 필요하다.\u003c/p\u003e\n\u003cp\u003e이 부분에 대해 찾아볼 때 트랜스파일링을 하면 Babel과 같은 트랜스파일러에 의해 JSX 코드가 \u003ccode\u003eReact.createElement\u003c/code\u003e로 변환된다.\u003cbr\u003e\n그리고 \u003ccode\u003eReact.createElement\u003c/code\u003e에 의해 자바스크립트 객체로 최종적으로 바뀐다라고 설명 되어 있는 내용을 많이 봤다.\u003c/p\u003e\n\u003cp\u003e하지만 \u003ca href=\"https://ko.react.dev/reference/react/createElement#createelement\"\u003e리액트 공식 문서\u003c/a\u003e를 살펴보면 \u003ccode\u003eReact.createElement\u003c/code\u003e는 \u003cstrong\u003e레거시 api\u003c/strong\u003e로 소개되어 있다.\u003cbr\u003e\n오잉? 그렇다면 내가 찾아본 설명이 옛날 거고 지금은 내부 로직이 바뀐건가? 왜 \u003ccode\u003ecreateElement\u003c/code\u003e가 레거시 api로 되어 있지 싶어서 더 찾아봤다.\u003c/p\u003e\n\u003cbr /\u003e\n\u003ch2\u003ecreateElement가 레거시 api가 된 이유\u003c/h2\u003e\n\u003cp\u003e2019년에 \u003ccode\u003ecreateElement\u003c/code\u003e에 대한 \u003ca href=\"https://github.com/reactjs/rfcs/blob/c71cb88b0badbe9119e1399688ee481e62da142b/text/0000-create-element-changes.md\"\u003eRFC\u003c/a\u003e가 올라왔다.\u003c/p\u003e\n\u003cblockquote\u003e\n\u003cp\u003e\u003cstrong\u003eRFC란?\u003c/strong\u003e\u003cbr\u003e\n\"Request for Comments\"의 약자로, 기술적인 제안이나 표준을 문서화하는 방식으로, 오픈소스에서 새로운 기능이나 변경사항을 제안하고\n논의하기 위한 문서 같은 의미로 사용됨\u003c/p\u003e\n\u003c/blockquote\u003e\n\u003cp\u003eRFC에서 말하는 createElement의 문제점을 정리하면 이렇다\u003c/p\u003e\n\u003cul\u003e\n\u003cli\u003e트랜스파일링 된 createElement를 호출하기 위헤 불필요한 \u003ccode\u003eimport React from 'react'\u003c/code\u003e 구문이 항상 필요함\u003c/li\u003e\n\u003cli\u003e클래스 컴포넌트를 사용할 때는 의미가 있었지만 함수형 컴포넌트로 바뀌면서 의미가 없어진 기능들이 존재\u003c/li\u003e\n\u003cli\u003ecreateElement는 JSX의 사용을 생각하고 만든 것이 아니라 JSX 사용 없이 수동으로 작성할 수 있도록 한 것\u003c/li\u003e\n\u003c/ul\u003e\n\u003cp\u003e이러한 문제로 인해 \u003cstrong\u003e함수형 컴포넌트\u003c/strong\u003e + \u003cstrong\u003eJSX\u003c/strong\u003e 상황에 맞게 createElement 개선하는 작업이 진행되었다.\u003cbr\u003e\ncreateElement 대한 더 자세한 내용은 RFC에서 확인할 수 있다.\u003c/p\u003e\n\u003cbr /\u003e\n\u003ch2\u003e개선된 JSX 트랜스파일링\u003c/h2\u003e\n\u003cp\u003e리액트 17 버전 부터는 트랜스파일링 결과가 \u003ccode\u003ecreateElement\u003c/code\u003e가 아니라 \u003ccode\u003ejsx\u003c/code\u003e로 바뀐다.\u003c/p\u003e\n\u003cp\u003ejsx에 대한 내부 코드를 살펴보자.\u003cbr\u003e\njsx 함수는 dev, prod 환경에 따라 다른 함수를 사용한다. 운영 환경에서 사용되는 jsxProd만 살펴볼 예정이다.\u003c/p\u003e\n\u003cp\u003e코드를 처음 살펴보면서 공부하는 거라 어렵게 느껴지고 코드에 압도(?) 당하는 거 같지만 차근 차근 살펴보면 jsx 함수는 props, key를 설정하는 함수라는 걸 알 수 있다.\u003c/p\u003e\n\u003cpre\u003e\u003ccode class=\"language-javascript hljs\"\u003e\u003cspan class=\"hljs-keyword\"\u003eexport\u003c/span\u003e \u003cspan class=\"hljs-keyword\"\u003efunction\u003c/span\u003e \u003cspan class=\"hljs-title function_\"\u003ejsxProd\u003c/span\u003e(\u003cspan class=\"hljs-params\"\u003etype, config, maybeKey\u003c/span\u003e) {\n  \u003cspan class=\"hljs-keyword\"\u003elet\u003c/span\u003e key = \u003cspan class=\"hljs-literal\"\u003enull\u003c/span\u003e;\n\n  \u003cspan class=\"hljs-comment\"\u003e// key 설정\u003c/span\u003e\n  \u003cspan class=\"hljs-keyword\"\u003eif\u003c/span\u003e (maybeKey !== \u003cspan class=\"hljs-literal\"\u003eundefined\u003c/span\u003e) {\n    \u003cspan class=\"hljs-comment\"\u003e// ...\u003c/span\u003e\n    key = \u003cspan class=\"hljs-string\"\u003e\u0026quot;\u0026quot;\u003c/span\u003e + maybeKey;\n  }\n\n  \u003cspan class=\"hljs-keyword\"\u003eif\u003c/span\u003e (\u003cspan class=\"hljs-title function_\"\u003ehasValidKey\u003c/span\u003e(config)) {\n    \u003cspan class=\"hljs-comment\"\u003e// ...\u003c/span\u003e\n    key = \u003cspan class=\"hljs-string\"\u003e\u0026quot;\u0026quot;\u003c/span\u003e + config.\u003cspan class=\"hljs-property\"\u003ekey\u003c/span\u003e;\n  }\n\n  \u003cspan class=\"hljs-comment\"\u003e// props 설정\u003c/span\u003e\n  \u003cspan class=\"hljs-keyword\"\u003elet\u003c/span\u003e props;\n  \u003cspan class=\"hljs-keyword\"\u003eif\u003c/span\u003e (!(\u003cspan class=\"hljs-string\"\u003e\u0026quot;key\u0026quot;\u003c/span\u003e \u003cspan class=\"hljs-keyword\"\u003ein\u003c/span\u003e config)) {\n    props = config;\n  } \u003cspan class=\"hljs-keyword\"\u003eelse\u003c/span\u003e {\n    props = {};\n    \u003cspan class=\"hljs-keyword\"\u003efor\u003c/span\u003e (\u003cspan class=\"hljs-keyword\"\u003econst\u003c/span\u003e propName \u003cspan class=\"hljs-keyword\"\u003ein\u003c/span\u003e config) {\n      \u003cspan class=\"hljs-comment\"\u003e// Skip over reserved prop names\u003c/span\u003e\n      \u003cspan class=\"hljs-keyword\"\u003eif\u003c/span\u003e (propName !== \u003cspan class=\"hljs-string\"\u003e\u0026quot;key\u0026quot;\u003c/span\u003e) {\n        props[propName] = config[propName];\n      }\n    }\n  }\n\n  \u003cspan class=\"hljs-comment\"\u003e// ...\u003c/span\u003e\n\n  \u003cspan class=\"hljs-comment\"\u003e// ReactElement 반환\u003c/span\u003e\n  \u003cspan class=\"hljs-keyword\"\u003ereturn\u003c/span\u003e \u003cspan class=\"hljs-title class_\"\u003eReactElement\u003c/span\u003e(\n    type,\n    key,\n    \u003cspan class=\"hljs-literal\"\u003eundefined\u003c/span\u003e,\n    \u003cspan class=\"hljs-literal\"\u003eundefined\u003c/span\u003e,\n    \u003cspan class=\"hljs-title function_\"\u003egetOwner\u003c/span\u003e(),\n    props,\n    \u003cspan class=\"hljs-literal\"\u003eundefined\u003c/span\u003e,\n    \u003cspan class=\"hljs-literal\"\u003eundefined\u003c/span\u003e\n  );\n}\n\u003c/code\u003e\u003c/pre\u003e\n\u003cp\u003espread 구문으로 key 가 props로 전달되는 게 가능하지만 점차 deprecated할 예정인데,\u003cbr\u003e\n이를 점진적으로 개선하기 위해 maybeKey를 사용해 props로 전달된 key와 명시적으로 전달된 key를 구분한다.\u003c/p\u003e\n\u003cpre\u003e\u003ccode class=\"language-javascript hljs\"\u003e\u003cspan class=\"hljs-keyword\"\u003eif\u003c/span\u003e (maybeKey !== \u003cspan class=\"hljs-literal\"\u003eundefined\u003c/span\u003e) {\n  \u003cspan class=\"hljs-comment\"\u003e// ...\u003c/span\u003e\n  key = \u003cspan class=\"hljs-string\"\u003e\u0026quot;\u0026quot;\u003c/span\u003e + maybeKey;\n}\n\n\u003cspan class=\"hljs-keyword\"\u003eif\u003c/span\u003e (\u003cspan class=\"hljs-title function_\"\u003ehasValidKey\u003c/span\u003e(config)) {\n  \u003cspan class=\"hljs-comment\"\u003e// ...\u003c/span\u003e\n  key = \u003cspan class=\"hljs-string\"\u003e\u0026quot;\u0026quot;\u003c/span\u003e + config.\u003cspan class=\"hljs-property\"\u003ekey\u003c/span\u003e;\n}\n\u003c/code\u003e\u003c/pre\u003e\n\u003cp\u003ejsx 함수에 대해 살펴 봤으니 그 다음으로는 jsx가 반환하는 ReactElement를 살펴보고자 한다.\u003c/p\u003e\n\u003cpre\u003e\u003ccode class=\"language-javascript hljs\"\u003e\u003cspan class=\"hljs-keyword\"\u003efunction\u003c/span\u003e \u003cspan class=\"hljs-title function_\"\u003eReactElement\u003c/span\u003e(\u003cspan class=\"hljs-params\"\u003e\n  type,\n  key,\n  self,\n  source,\n  owner,\n  props,\n  debugStack,\n  debugTask\n\u003c/span\u003e) {\n  \u003cspan class=\"hljs-comment\"\u003e// ...\u003c/span\u003e\n\n  \u003cspan class=\"hljs-keyword\"\u003elet\u003c/span\u003e element;\n\n  \u003cspan class=\"hljs-comment\"\u003e// ...\u003c/span\u003e\n  element = {\n    \u003cspan class=\"hljs-attr\"\u003e$$typeof\u003c/span\u003e: \u003cspan class=\"hljs-variable constant_\"\u003eREACT_ELEMENT_TYPE\u003c/span\u003e,\n    type,\n    key,\n    ref,\n    props,\n  };\n\n  \u003cspan class=\"hljs-keyword\"\u003ereturn\u003c/span\u003e element;\n}\n\u003c/code\u003e\u003c/pre\u003e\n\u003cp\u003eReactElement 함수에 다른 내용도 있지만 간단히 정리하면 위와 같이 element 객체를 정의하고 그 객체를 반환하는 함수이다.\n따라서, createElement에서 jsx로 코드가 바뀌었지만 동일하게 자바스크립트 객체로 최종적으로 반환한다.\u003c/p\u003e\n\u003cpre\u003e\u003ccode class=\"language-javascript hljs\"\u003e\u003cspan class=\"hljs-comment\"\u003e// 이런 JSX 문법이\u003c/span\u003e\n\u003cspan class=\"hljs-keyword\"\u003econst\u003c/span\u003e element = \u003cspan class=\"language-xml\"\u003e\u003cspan class=\"hljs-tag\"\u003e\u0026lt;\u003cspan class=\"hljs-name\"\u003eh1\u003c/span\u003e \u003cspan class=\"hljs-attr\"\u003eclassName\u003c/span\u003e=\u003cspan class=\"hljs-string\"\u003e\u0026quot;greeting\u0026quot;\u003c/span\u003e\u0026gt;\u003c/span\u003eHello, world!\u003cspan class=\"hljs-tag\"\u003e\u0026lt;/\u003cspan class=\"hljs-name\"\u003eh1\u003c/span\u003e\u0026gt;\u003c/span\u003e\u003c/span\u003e;\n\n\u003cspan class=\"hljs-comment\"\u003e// 이런 _jsx 호출로 바뀐다\u003c/span\u003e\n\u003cspan class=\"hljs-keyword\"\u003eimport\u003c/span\u003e { jsx \u003cspan class=\"hljs-keyword\"\u003eas\u003c/span\u003e _jsx } \u003cspan class=\"hljs-keyword\"\u003efrom\u003c/span\u003e \u003cspan class=\"hljs-string\"\u003e\u0026quot;react/jsx-runtime\u0026quot;\u003c/span\u003e;\n\n\u003cspan class=\"hljs-keyword\"\u003econst\u003c/span\u003e element = \u003cspan class=\"hljs-title function_\"\u003e_jsx\u003c/span\u003e(\u003cspan class=\"hljs-string\"\u003e\u0026quot;h1\u0026quot;\u003c/span\u003e, {\n  \u003cspan class=\"hljs-attr\"\u003eclassName\u003c/span\u003e: \u003cspan class=\"hljs-string\"\u003e\u0026quot;greeting\u0026quot;\u003c/span\u003e,\n  \u003cspan class=\"hljs-attr\"\u003echildren\u003c/span\u003e: \u003cspan class=\"hljs-string\"\u003e\u0026quot;Hello, world!\u0026quot;\u003c/span\u003e,\n});\n\n\u003cspan class=\"hljs-comment\"\u003e// 최종적으로 자바스크립트 객체를 생성한다\u003c/span\u003e\n\u003cspan class=\"hljs-keyword\"\u003econst\u003c/span\u003e element = {\n  \u003cspan class=\"hljs-attr\"\u003etype\u003c/span\u003e: \u003cspan class=\"hljs-string\"\u003e\u0026quot;h1\u0026quot;\u003c/span\u003e,\n  \u003cspan class=\"hljs-attr\"\u003eprops\u003c/span\u003e: {\n    \u003cspan class=\"hljs-attr\"\u003eclassName\u003c/span\u003e: \u003cspan class=\"hljs-string\"\u003e\u0026quot;greeting\u0026quot;\u003c/span\u003e,\n    \u003cspan class=\"hljs-attr\"\u003echildren\u003c/span\u003e: \u003cspan class=\"hljs-string\"\u003e\u0026quot;Hello, world!\u0026quot;\u003c/span\u003e,\n  },\n};\n\u003c/code\u003e\u003c/pre\u003e\n\u003cp\u003echilderen을 인자로 건내주었던 createElement와 달리 jsx 함수는 children을 props로 전달하고 있다.\u003c/p\u003e\n\u003cpre\u003e\u003ccode class=\"language-javascript hljs\"\u003e\u003cspan class=\"hljs-title class_\"\u003eReact\u003c/span\u003e.\u003cspan class=\"hljs-title function_\"\u003ecreateElement\u003c/span\u003e(\u003cspan class=\"hljs-string\"\u003e\u0026quot;h1\u0026quot;\u003c/span\u003e, { \u003cspan class=\"hljs-attr\"\u003eclassName\u003c/span\u003e: \u003cspan class=\"hljs-string\"\u003e\u0026quot;greeting\u0026quot;\u003c/span\u003e }, \u003cspan class=\"hljs-string\"\u003e\u0026quot;Hello, world!\u0026quot;\u003c/span\u003e);\n\n\u003cspan class=\"hljs-title function_\"\u003ejsx\u003c/span\u003e(\u003cspan class=\"hljs-string\"\u003e\u0026quot;h1\u0026quot;\u003c/span\u003e, { \u003cspan class=\"hljs-attr\"\u003eclassName\u003c/span\u003e: \u003cspan class=\"hljs-string\"\u003e\u0026quot;greeting\u0026quot;\u003c/span\u003e, \u003cspan class=\"hljs-attr\"\u003echildren\u003c/span\u003e: \u003cspan class=\"hljs-string\"\u003e\u0026quot;Hello, world!\u0026quot;\u003c/span\u003e });\n\u003c/code\u003e\u003c/pre\u003e\n\u003cp\u003e리액트는 이렇게 변환된 객체를 읽어서 DOM으로 렌더링 한다.\u003c/p\u003e\n\u003cp\u003e미니 리액트를 만들 때는 트랜스파일러까지는 작업하지 않고 jsx 함수가 최종적으로 반환하는 JSX 객체의 구조만 만들어서 DOM으로 렌더링 시키려고 한다.\u003c/p\u003e\n\u003cbr /\u003e\n\u003ch1\u003eJSX-Like 객체\u003c/h1\u003e\n\u003cpre\u003e\u003ccode class=\"language-javascript hljs\"\u003e{\n  \u003cspan class=\"hljs-attr\"\u003etype\u003c/span\u003e: \u003cspan class=\"hljs-string\"\u003e\u0026quot;\u0026quot;\u003c/span\u003e; \u003cspan class=\"hljs-comment\"\u003e// 태그 이름, 리액트 컴포넌트일 경우 대문자로 시작\u003c/span\u003e\n  \u003cspan class=\"hljs-attr\"\u003ekey\u003c/span\u003e: \u003cspan class=\"hljs-literal\"\u003enull\u003c/span\u003e; \u003cspan class=\"hljs-comment\"\u003e// 전달 받은 값이 있을 경우 전달 받은 값으로 할당, 기본은 null\u003c/span\u003e\n  \u003cspan class=\"hljs-attr\"\u003eref\u003c/span\u003e: \u003cspan class=\"hljs-literal\"\u003enull\u003c/span\u003e; \u003cspan class=\"hljs-comment\"\u003e// 전달 받은 값이 있을 경우 전달 받은 값으로 할당, 기본은 null\u003c/span\u003e\n  \u003cspan class=\"hljs-attr\"\u003eprops\u003c/span\u003e: {\n    \u003cspan class=\"hljs-attr\"\u003echildren\u003c/span\u003e: []; \u003cspan class=\"hljs-comment\"\u003e// 자식 노드 :: 문자열, 숫자, 빈 노드, 리액트 엘리먼트 등등\u003c/span\u003e\n  }\n}\n\u003c/code\u003e\u003c/pre\u003e\n\u003cp\u003e리액트 트랜스파일링과 jsx 함수에 대한 내용을 참고해서 JSX-Like 객체의 구조를 이렇게 같이 잡았다.\u003cbr\u003e\n이렇게 리액트의 내부 코드까지 살펴보면서 공부해본 적은 처음이라 정확히 이해가 전부 안 가는 부분들도 남아 있기는하다. 이해 안가면 계속 반복해서 보다보면 이해할 때가 있을 거라 생각하고 앞으로 계속 미니 리액트를 만들어가면서 더 이해가 깊어지지 않을까 생각한다.\u003c/p\u003e\n\u003cbr /\u003e\n\u003cbr /\u003e\n\u003ch1\u003e참고\u003c/h1\u003e\n\u003cul\u003e\n\u003cli\u003e\u003ca href=\"https://github.com/facebook/react/blob/main/packages/react/src/jsx/ReactJSXElement.js#L306\"\u003eReact github_jsxProd\u003c/a\u003e\u003c/li\u003e\n\u003cli\u003e\u003ca href=\"https://ko.react.dev/learn/writing-markup-with-jsx\"\u003eJSX로 마크업 작성하기\u003c/a\u003e\u003c/li\u003e\n\u003cli\u003e\u003ca href=\"https://ko.react.dev/reference/react/createElement#createelement\"\u003ecreateElement\u003c/a\u003e\u003c/li\u003e\n\u003cli\u003e\u003ca href=\"https://ko.legacy.reactjs.org/docs/introducing-jsx.html\"\u003eJSX 소개\u003c/a\u003e\u003c/li\u003e\n\u003cli\u003e\u003ca href=\"https://velog.io/@hbsps/React-createElement%EB%A1%9C-%EB%A6%AC%ED%8C%A9%ED%86%A0%EB%A7%81-%ED%95%98%EA%B8%B0-%EA%B6%8C%EC%9E%A5-X\"\u003eReact createElement로 리팩토링 하기 (권장 X)\u003c/a\u003e\u003c/li\u003e\n\u003cli\u003e\u003ca href=\"https://velog.io/@sa02045/React-createElement-%EC%95%8C%EC%95%84%EB%B3%B4%EA%B8%B0#createelement%EA%B0%80-legacy-api%EA%B0%80-%EB%90%9C-%EC%9D%B4%EC%9C%A0---%EB%AC%B8%EC%A0%9C%EC%A0%90\"\u003eReact - createElement 알아보기\u003c/a\u003e\u003c/li\u003e\n\u003c/ul\u003e\n"])</script><script>self.__next_f.push([1,"4:[\"$\",\"main\",null,{\"className\":\"ios-memo-container\",\"children\":[\"$\",\"div\",null,{\"className\":\"post-container\",\"children\":[[\"$\",\"div\",null,{\"className\":\"post-header\",\"children\":[[\"$\",\"h1\",null,{\"className\":\"post-title\",\"children\":\"미니 React 개발 Day2. JSX\"}],[\"$\",\"div\",null,{\"className\":\"post-info flex flex-row gap-[12px]\",\"children\":[[\"$\",\"div\",null,{\"className\":\"post-author\",\"children\":\"@sunny\"}],[\"$\",\"div\",null,{\"className\":\"post-date\",\"children\":\"2025. 5. 20.\"}]]}],false]}],[\"$\",\"div\",null,{\"className\":\"post-content\",\"dangerouslySetInnerHTML\":{\"__html\":\"$12\"}}]]}]}]\n"])</script><script>self.__next_f.push([1,"d:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"}],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}]]\n8:null\n"])</script><script>self.__next_f.push([1,"11:{\"metadata\":[[\"$\",\"title\",\"0\",{\"children\":\"Sunny Archive\"}],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"익숙함을 향해 걸어가는 중\"}],[\"$\",\"link\",\"2\",{\"rel\":\"icon\",\"href\":\"/favicon.ico\",\"type\":\"image/x-icon\",\"sizes\":\"16x16\"}]],\"error\":null,\"digest\":\"$undefined\"}\nb:{\"metadata\":\"$11:metadata\",\"error\":null,\"digest\":\"$undefined\"}\n"])</script></body></html>
