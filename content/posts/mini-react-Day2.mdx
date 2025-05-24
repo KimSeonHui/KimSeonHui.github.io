@@ -7,7 +7,7 @@ description: "JSX-Like 구조 설계"
 
 # JSX란?
 
-```
+```javascript
 const element = <h1>Hello, world!</h1>;
 ```
 
@@ -67,30 +67,30 @@ jsx 함수는 dev, prod 환경에 따라 다른 함수를 사용한다. 운영 �
 
 코드를 처음 살펴보면서 공부하는 거라 어렵게 느껴지고 코드에 압도(?) 당하는 거 같지만 차근 차근 살펴보면 jsx 함수는 props, key를 설정하는 함수라는 걸 알 수 있다.
 
-```
+```javascript
 export function jsxProd(type, config, maybeKey) {
   let key = null;
 
   // key 설정
   if (maybeKey !== undefined) {
     // ...
-    key = '' + maybeKey;
+    key = "" + maybeKey;
   }
 
   if (hasValidKey(config)) {
     // ...
-    key = '' + config.key;
+    key = "" + config.key;
   }
 
   // props 설정
   let props;
-  if (!('key' in config)) {
+  if (!("key" in config)) {
     props = config;
   } else {
     props = {};
     for (const propName in config) {
       // Skip over reserved prop names
-      if (propName !== 'key') {
+      if (propName !== "key") {
         props[propName] = config[propName];
       }
     }
@@ -107,7 +107,7 @@ export function jsxProd(type, config, maybeKey) {
     getOwner(),
     props,
     undefined,
-    undefined,
+    undefined
   );
 }
 ```
@@ -115,21 +115,21 @@ export function jsxProd(type, config, maybeKey) {
 spread 구문으로 key 가 props로 전달되는 게 가능하지만 점차 deprecated할 예정인데,  
 이를 점진적으로 개선하기 위해 maybeKey를 사용해 props로 전달된 key와 명시적으로 전달된 key를 구분한다.
 
-```
-  if (maybeKey !== undefined) {
-    // ...
-    key = '' + maybeKey;
-  }
+```javascript
+if (maybeKey !== undefined) {
+  // ...
+  key = "" + maybeKey;
+}
 
-  if (hasValidKey(config)) {
-    // ...
-    key = '' + config.key;
-  }
+if (hasValidKey(config)) {
+  // ...
+  key = "" + config.key;
+}
 ```
 
 jsx 함수에 대해 살펴 봤으니 그 다음으로는 jsx가 반환하는 ReactElement를 살펴보고자 한다.
 
-```
+```javascript
 function ReactElement(
   type,
   key,
@@ -138,7 +138,7 @@ function ReactElement(
   owner,
   props,
   debugStack,
-  debugTask,
+  debugTask
 ) {
   // ...
 
@@ -160,43 +160,34 @@ function ReactElement(
 ReactElement 함수에 다른 내용도 있지만 간단히 정리하면 위와 같이 element 객체를 정의하고 그 객체를 반환하는 함수이다.
 따라서, createElement에서 jsx로 코드가 바뀌었지만 동일하게 자바스크립트 객체로 최종적으로 반환한다.
 
-```
+```javascript
 // 이런 JSX 문법이
-const element = (
-  <h1 className="greeting">
-    Hello, world!
-  </h1>
-);
-
+const element = <h1 className="greeting">Hello, world!</h1>;
 
 // 이런 _jsx 호출로 바뀐다
 import { jsx as _jsx } from "react/jsx-runtime";
 
-const element = _jsx(
-  'h1',
-  {
-    className: 'greeting',
-    children : 'Hello, world!'
-  },
-);
+const element = _jsx("h1", {
+  className: "greeting",
+  children: "Hello, world!",
+});
 
 // 최종적으로 자바스크립트 객체를 생성한다
 const element = {
-  type: 'h1',
+  type: "h1",
   props: {
-    className: 'greeting',
-    children: 'Hello, world!'
-  }
+    className: "greeting",
+    children: "Hello, world!",
+  },
 };
-
 ```
 
 childeren을 인자로 건내주었던 createElement와 달리 jsx 함수는 children을 props로 전달하고 있다.
 
-```
+```javascript
 React.createElement("h1", { className: "greeting" }, "Hello, world!");
 
-jsx("h1", {  className: "greeting", children: "Hello, world!" });
+jsx("h1", { className: "greeting", children: "Hello, world!" });
 ```
 
 리액트는 이렇게 변환된 객체를 읽어서 DOM으로 렌더링 한다.
@@ -207,11 +198,11 @@ jsx("h1", {  className: "greeting", children: "Hello, world!" });
 
 # JSX-Like 객체
 
-```
+```javascript
 {
   type: ""; // 태그 이름, 리액트 컴포넌트일 경우 대문자로 시작
-  key : null; // 전달 받은 값이 있을 경우 전달 받은 값으로 할당, 기본은 null
-  ref : null; // 전달 받은 값이 있을 경우 전달 받은 값으로 할당, 기본은 null
+  key: null; // 전달 받은 값이 있을 경우 전달 받은 값으로 할당, 기본은 null
+  ref: null; // 전달 받은 값이 있을 경우 전달 받은 값으로 할당, 기본은 null
   props: {
     children: []; // 자식 노드 :: 문자열, 숫자, 빈 노드, 리액트 엘리먼트 등등
   }
